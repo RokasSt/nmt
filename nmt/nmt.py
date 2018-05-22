@@ -368,7 +368,7 @@ def extend_hparams(hparams):
   utils.print_out("  dev_prefix=%s" % hparams.dev_prefix)
   utils.print_out("  test_prefix=%s" % hparams.test_prefix)
   utils.print_out("  out_dir=%s" % hparams.out_dir)
-
+  
   # Set num_residual_layers
   if hparams.residual and hparams.num_layers > 1:
     if hparams.encoder_type == "gnmt":
@@ -454,10 +454,11 @@ def ensure_compatible_hparams(hparams, default_hparams, hparams_path):
   #   we add them to the current hparams
   default_config = default_hparams.values()
   config = hparams.values()
+  
   for key in default_config:
-    if key not in config:
+    if key not in config.keys():
       hparams.add_hparam(key, default_config[key])
-
+  
   # Update all hparams' keys if override_loaded_hparams=True
   if default_hparams.override_loaded_hparams:
     for key in default_config:
@@ -466,6 +467,7 @@ def ensure_compatible_hparams(hparams, default_hparams, hparams_path):
                         (key, str(getattr(hparams, key)),
                          str(default_config[key])))
         setattr(hparams, key, default_config[key])
+  
   return hparams
 
 
@@ -489,6 +491,7 @@ def create_or_load_hparams(
 
   # Print HParams
   utils.print_hparams(hparams)
+   
   return hparams
 
 
