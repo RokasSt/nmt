@@ -12,6 +12,7 @@ from tensorflow.python.ops import lookup_ops
 from .utils import iterator_utils
 from .utils import misc_utils as utils
 from .utils import vocab_utils
+from TF_MISC_CLASS.Networks.custom_rnn_cell_impl_quant import BasicLSTMCellQuantMatMul
 
 
 __all__ = [
@@ -329,29 +330,36 @@ def create_emb_for_encoder_and_decoder(share_vocab,
   return embedding_encoder, embedding_decoder
 
 
-def _single_cell(unit_type, num_units, forget_bias, dropout, mode,
-                 residual_connection=False, device_str=None, residual_fn=None):
+def _single_cell(unit_type, 
+                 num_units, 
+                 forget_bias, 
+                 dropout, 
+                 mode,
+                 residual_connection=False, 
+                 device_str=None, 
+                 residual_fn=None,
+                 quant_params = {}):
   """Create an instance of a single RNN cell."""
   # dropout (= 1 - keep_prob) is set to 0 during eval and infer
   dropout = dropout if mode == tf.contrib.learn.ModeKeys.TRAIN else 0.0
 
   # Cell Type
-  if unit_type == "lstm":
+  if unit_type == "lstm" and quant_params == {}:
     utils.print_out("  LSTM, forget_bias=%g" % forget_bias, new_line=False)
     single_cell = tf.contrib.rnn.BasicLSTMCell(
         num_units,
         forget_bias=forget_bias)
-  elif unit_type == "gru":
+  elif unit_type == "gru" and quant_params == {}:
     utils.print_out("  GRU", new_line=False)
     single_cell = tf.contrib.rnn.GRUCell(num_units)
-  elif unit_type == "layer_norm_lstm":
+  elif unit_type == "layer_norm_lstm" and quant_params == {}:
     utils.print_out("  Layer Normalized LSTM, forget_bias=%g" % forget_bias,
                     new_line=False)
     single_cell = tf.contrib.rnn.LayerNormBasicLSTMCell(
         num_units,
         forget_bias=forget_bias,
         layer_norm=True)
-  elif unit_type == "nas":
+  elif unit_type == "nas" and quant_params == {}:
     utils.print_out("  NASCell", new_line=False)
     single_cell = tf.contrib.rnn.NASCell(num_units)
   else:

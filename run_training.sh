@@ -3,6 +3,7 @@ python -m nmt.nmt \
     --src=de \
     --tgt=en \
     --hparams_path=nmt/standard_hparams/wmt16.json \
+    --quant_params_path=nmt/quant_hparams/exp1.json \
     --out_dir=/tmp/wmt16 \
     --vocab_prefix=/Users/rokas/TF_MISC_CLASS/Datasets/WMT16_DE_EN/vocab.bpe.32000 \
     --train_prefix=/Users/rokas/TF_MISC_CLASS/Datasets/WMT16_DE_EN/train.tok.clean.bpe.32000 \
